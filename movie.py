@@ -41,14 +41,21 @@ class MovieFactory(object):
         """
         list1 = []
         for i in self.process():
-            if i.title == title:
-                return i
+            if title in  i.title:
+                list1.append(i)
             elif i.title != title:
                 v = difflib.SequenceMatcher(None, i.title, title).ratio()
-                if v > 0.40:
+                if v > 0.50:
                     list1.append(i)
         print(', '.join(repr(e) for e in list1))
 
+    def search_year(self, year):
+        """Searches movies certain year and returns a list of such movies"""
+        list_year = []
+        for i in self.process():
+            if year in i.year:
+                list_year.append(i)
+        print(','.join((repr(e) for e in list_year)))
 
 class Movie(object):
     def __init__(self, **kwargs):
@@ -72,10 +79,18 @@ class Movie(object):
 if __name__ == '__main__':
     fact = MovieFactory('film.csv')
     parser = argparse.ArgumentParser(description="Searches movie titles")
-    parser.add_argument('movie_name', help='Input movie title')
+    parser.add_argument('-n', '--movie_name', help='Input movie title')
+    parser.add_argument('-m', '--movie_year', help='Input movie year')
     args = parser.parse_args()
-    x = fact.search_mov(args.movie_name)
-    print(x)
+    if args.movie_name:
+        x = fact.search_mov(args.movie_name)
+        print(x)
+    elif args.movie_year:
+        y = fact.search_year(args.movie_year)
+        print(y)
+    # y = fact.search_year(args.movie_year)
+    # x = fact.search_mov(args.movie_name)
+    # print(x)
 
 
 # print("Arguments from the terminal: {}".format(", ".join(["# %s=%s" % (i, a) for i, a in enumerate(sys.argv)])))
